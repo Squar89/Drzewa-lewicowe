@@ -1,3 +1,5 @@
+(*Autor - Jakub Wróblewski 38401
+Recenzent - Jakub Obuchowski (*wpisz swój numer*)*)
 type 'a queue =
 | Leaf
 | Node of 'a queue * 'a * int * 'a queue
@@ -11,23 +13,19 @@ exception Empty
 
 let is_empty q =
     match q with
-    | Leaf ->
-        true
-    | _ ->
-        false
+    | Leaf -> true
+    | _ -> false
 ;;
 
 (*funkcja tworząca nową, jednoelementową kolejkę*)
-let create x = Node (Leaf, x, 0, Leaf)
+let create x = Node (Leaf, x, 1, Leaf)
 ;;
 
-(*funkcja sprawdzająca wysokość poddrzew*)
+(*funkcja zwracająca wysokość drzewa*)
 let height q =
     match q with
-    | Leaf ->
-        0
-    | Node(ql, x, h, qp) ->
-        h
+    | Leaf -> 0
+    | Node(_, _, h, _) -> h
 ;;
 
 (*funkcja sprawdzająca lewicowość drzewa*)
@@ -48,9 +46,8 @@ let rec join q1 q2 =
         if(x1 > x2) then
             join q2 q1
         else
-            let r = join q1p q2
-            in
-                check (Node(q1l, x1, h1, r))
+            let r = join q1p q2 in
+            check (Node(q1l, x1, h1, r))
     | Node(q1l, x1, h1, q1p), Leaf ->
         Node(q1l, x1, h1, q1p)
     | Leaf, Node(q2l, x2, h2, q2p) ->
@@ -64,12 +61,10 @@ let add e q =
 ;;
 
 let delete_min q =
-    if is_empty q then
+    match q with
+    | Leaf ->
         raise Empty
-    else 
-        match q with
-        | Node (ql, x, h, qp) ->
-            (x, join ql qp)
-        | Leaf ->
-            raise Empty
+    | Node (ql, x, h, qp) ->
+        (x, join ql qp)
+        
 ;;
